@@ -19,8 +19,6 @@ var (
 	// rturlFormat = "http://www.rt-mart.com.tw/direct/index.php?action=product_search&prod_keyword=&p_data_num=100&page=%d"
 	rturlFormat = "http://www.rt-mart.com.tw/direct/index.php?action=product_search&prod_keyword=&p_data_num=%d&page=%d"
 	rtNum       = 100
-	// reRTtotal = regexp.MustCompile(`<span class="t02">([0-9]{2,})</span>件商品`)
-	// reConten = regexp.MustCompile(`<span class="t02">([0-9]{2,})</span>件商品`)
 )
 
 // RTmart hold task RT-mart
@@ -137,7 +135,8 @@ func (task *RTmart) process(doc *goquery.Document) {
 			switch {
 			case err == sql.ErrNoRows:
 				// no row in that url
-				_, err = task.Context.DB.NamedExec(`INSERT INTO item (price, diff, name, url, imgsrc, source, note, created, updated ) VALUES (
+				_, err = task.Context.DB.NamedExec(`INSERT INTO item 
+				(price, diff, name, url, imgsrc, source, note, created, updated ) VALUES (
 				:price,
 				:diff,
 				:name,
@@ -155,7 +154,6 @@ func (task *RTmart) process(doc *goquery.Document) {
 			default:
 				// compare existed one
 				newItem.Diff = newItem.Price - origItem.Price
-				// no row in that url
 				_, err = task.Context.DB.NamedExec(`UPDATE item SET
 				price=:price,
 				diff=:diff,

@@ -17,8 +17,6 @@ var (
 	carrefourURL         = "https://online.carrefour.com.tw/CarrefourECProduct/GetSearchJson"
 	carrefourQueryFormat = "pageIndex=%d&pageSize=%d&OrderById=0"
 	cfNum                = 35
-	// reRTtotal = regexp.MustCompile(`<span class="t02">([0-9]{2,})</span>件商品`)
-	// reConten = regexp.MustCompile(`<span class="t02">([0-9]{2,})</span>件商品`)
 )
 
 // CfItem carrefour item
@@ -172,7 +170,8 @@ func (task *Carrefour) process(items []CfItem) {
 		switch {
 		case err == sql.ErrNoRows:
 			// no row in that url
-			_, err = task.Context.DB.NamedExec(`INSERT INTO item (price, diff, name, url, imgsrc, source, note, created, updated ) VALUES (
+			_, err = task.Context.DB.NamedExec(`INSERT INTO item 
+			(price, diff, name, url, imgsrc, source, note, created, updated ) VALUES (
 			:price,
 			:diff,
 			:name,
@@ -190,7 +189,6 @@ func (task *Carrefour) process(items []CfItem) {
 		default:
 			// compare existed one
 			newItem.Diff = newItem.Price - origItem.Price
-			// no row in that url
 			_, err = task.Context.DB.NamedExec(`UPDATE item SET
 			price=:price,
 			diff=:diff,
